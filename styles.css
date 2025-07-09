@@ -1,54 +1,74 @@
 :root {
-    --cell-size: 100px;
-    --grid-gap: 10px;
-    --grid-padding: 80px;
-    --bg-color: #171b23;
-    --cell-color: #52504d;
-    --cell-hover-color: #7e7c78;
-    --cell-selected-color: #d26438;
-    --border-radius: 30px;
+  --cell-size: 100px;
+  --grid-gap: 5px;
+  --grid-padding: 80px;
+  --bg-color: #131b2d;
+  --cell-color: #52504d;
+  --cell-start-color: #2abb62;
+  --cell-end-color: #af3333;
+  --cell-obstacle-color: #131b2d;
+  --border-radius: 8px;
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-body, html {
-    min-width: 500px;
-    min-height: 500px;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--bg-color);
+body,
+html {
+  min-width: 500px;
+  min-height: 500px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg-color);
 }
 
 #tile-container {
-    display: grid;
-    gap: var(--grid-gap);
-    justify-content: center;
-    align-content: center;
-    width: 100%;
-    height: 100%;
-    padding: var(--grid-padding);
+  display: grid;
+  gap: var(--grid-gap);
+  justify-content: center;
+  align-content: center;
+  width: 100%;
+  height: 100%;
+  padding: var(--grid-padding);
 }
 
 .tile-cell {
-    width: var(--cell-size);
-    height: var(--cell-size);
-    background-color: var(--cell-color);
-    border-radius: var(--border-radius);
-    transition: transform 0.2s ease, background-color 0.2s ease;
-    background-size: cover;
+  width: var(--cell-size);
+  height: var(--cell-size);
+  background-color: var(--cell-color);
+  border-radius: var(--border-radius);
+  transition: transform 0.75s ease, background-color 0.75s ease;
+  background-size: cover;
+  border: #131b2d 1px solid;
 }
+.tile-cell.start {
+  background-color: var(--cell-start-color);
+}
+.tile-cell.end {
+    background-color: var(--cell-end-color);
+}
+.tile-cell.obstacle {
+  background-color: var(--cell-obstacle-color);
+}
+
 
 .tile-cell:hover {
-    background-color: var(--cell-hover-color);
-    transform: scale(1.05);
+  background-color: var(--cell-color);
+  transform: scale(1.1);
+  border-radius: calc(var(--border-radius) * 2);
+  filter: brightness(1.2);
 }
-
-.tile-cell.selected {
-    background-color: var(--cell-selected-color);
+.tile-cell.start:hover {
+  background-color: var(--cell-start-color);
+}
+.tile-cell.end:hover {
+  background-color: var(--cell-end-color);
+}
+.tile-cell.obstacle:hover {
+  background-color: var(--cell-obstacle-color);
 }

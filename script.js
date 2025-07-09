@@ -21,9 +21,9 @@ function calculateGridSize() {
 }
 
 let { tilesAcross, tilesDown } = calculateGridSize();
-let selectedCell = null;
-
-console.log(`Creating a grid of ${tilesAcross} tiles across and ${tilesDown} tiles down.`);
+let startCell = null;
+let endCell = null;
+let obstacleCells = [];
 
 function createTiles(tilesAcross, tilesDown) {
     // Get cell size from CSS variable
@@ -36,28 +36,109 @@ function createTiles(tilesAcross, tilesDown) {
     for (let i = 0; i < tilesAcross * tilesDown; i++) {
         const cell = document.createElement('div');
         cell.classList.add('tile-cell');
-        cell.addEventListener('click', handleCellClick);
+        cell.addEventListener('mousedown', handleCellClick); // Use mousedown to catch all buttons
+        cell.addEventListener('contextmenu', (e) => e.preventDefault()); // Prevent context menu on cells
         tileContainer.appendChild(cell);
     }
 }
 
 function handleCellClick(e) {
     const cell = e.target;
-    console.log(e);
-    console.log(`Clicked on cell: ${cell}`);
-
-    if (selectedCell) {
-        selectedCell.classList.remove('selected');
-    }
+    const index = Array.from(tileContainer.children).indexOf(cell);
+    const x = index % tilesAcross;
+    const y = Math.floor(index / tilesAcross);
     
-    if (cell == selectedCell) {
-        selectedCell.classList.remove('selected');
+    // Clear any existing classes from this cell
+    const clearCell = (cellElement) => {
+        cellElement.classList.remove('start', 'end', 'obstacle');
+    };
+    
+    switch(e.button) {
+        case 0: // Left click - Start-cell
+            
+            // If clicking on the current start-cell, remove it
+            if (cell === startCell) {
+                cell.classList.remove('start');
+                startCell = null;
+                console.log(`Button ${e.button} clicked on cell x:${x}, y:${y} - Removing start-cell`);
+            } 
+            // If clicking on end or obstacle cell, clear it and set as start
+            else if (cell.classList.contains('end') || cell.classList.contains('obstacle')) {
+                clearCell(cell);
+                if (cell === endCell) endCell = null;
+                obstacleCells = obstacleCells.filter(obstacle => obstacle !== cell);
+                
+                // Remove previous start-cell if exists
+                if (startCell) {
+                    startCell.classList.remove('start');
+                }
+                cell.classList.add('start');
+                startCell = cell;
+                console.log(`Button ${e.button} clicked on cell x:${x}, y:${y} - Setting start-cell`);
+            }
+            // If clicking on empty cell, set as start
+            else {
+                // Remove previous start-cell if exists
+                if (startCell) {
+                    startCell.classList.remove('start');
+                }
+                cell.classList.add('start');
+                startCell = cell;
+                console.log(`Button ${e.button} clicked on cell x:${x}, y:${y} - Setting start-cell`);
+            }
+            break;
+            
+        case 1: // Middle click (wheel) - Obstacle cell
+            console.log('Toggling obstacle cell');
+            
+            if (cell.classList.contains('obstacle')) {
+                // Remove obstacle
+                cell.classList.remove('obstacle');
+                obstacleCells = obstacleCells.filter(obstacle => obstacle !== cell);
+            } else {
+                // Add obstacle (clear other classes first)
+                clearCell(cell);
+                if (cell === startCell) startCell = null;
+                if (cell === endCell) endCell = null;
+                cell.classList.add('obstacle');
+                obstacleCells.push(cell);
+            }
+            break;
+            
+        case 2: // Right click - End-cell
+            
+            // If clicking on the current end-cell, remove it
+            if (cell === endCell) {
+                cell.classList.remove('end');
+                endCell = null;
+                console.log(`Button ${e.button} clicked on cell x:${x}, y:${y} - Removing end-cell`);
+            }
+            // If clicking on start or obstacle cell, clear it and set as end
+            else if (cell.classList.contains('start') || cell.classList.contains('obstacle')) {
+                clearCell(cell);
+                if (cell === startCell) startCell = null;
+                obstacleCells = obstacleCells.filter(obstacle => obstacle !== cell);
+                
+                // Remove previous end-cell if exists
+                if (endCell) {
+                    endCell.classList.remove('end');
+                }
+                cell.classList.add('end');
+                endCell = cell;
+                console.log(`Button ${e.button} clicked on cell x:${x}, y:${y} - Setting end-cell`);
+            }
+            // If clicking on empty cell, set as end
+            else {
+                // Remove previous end-cell if exists
+                if (endCell) {
+                    endCell.classList.remove('end');
+                }
+                cell.classList.add('end');
+                endCell = cell;
+                console.log(`Button ${e.button} clicked on cell x:${x}, y:${y} - Setting end-cell`);
+            }
+            break;
     }
-    else {
-        cell.classList.add('selected');
-        selectedCell = cell;
-    }
-        
 }
 
 createTiles(tilesAcross, tilesDown);
@@ -75,6 +156,8 @@ window.addEventListener('resize', () => {
         tilesAcross = newGrid.tilesAcross;
         tilesDown = newGrid.tilesDown;
         createTiles(tilesAcross, tilesDown);
-        selectedCell = null; // Reset selection after resize
+        startCell = null; // Reset start cell after resize
+        endCell = null; // Reset end cell after resize
+        obstacleCells = []; // Reset obstacle cells after resize
     }
 });
