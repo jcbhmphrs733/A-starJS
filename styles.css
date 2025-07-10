@@ -2,14 +2,14 @@
   --cell-size: 50px;
   --grid-gap: 5px;
   --grid-padding: 80px;
-  --bg-color: #000a22;
-  --cell-color: #222553;
-  --cell-start-color: #00b947;
-  --cell-end-color: #ad0000;
-  --cell-obstacle-color: #501580;
-  --cell-path-color: #ffee00;
-  --cell-explored-color: #38552d;
-  --border-radius: 5px;
+  --bg-color: #05361b;
+  --cell-color: #0f690c;
+  --cell-start-color: #00ff62;
+  --cell-end-color: #ff0000;
+  --cell-obstacle-color: #0f4919;
+  --cell-path-color: #ffd549;
+  --cell-explored-color: #832ae9;
+  --border-radius: 5px; 
 }
 
 * {

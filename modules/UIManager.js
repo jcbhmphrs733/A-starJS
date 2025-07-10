@@ -24,6 +24,7 @@ export class UIManager {
                     <p><strong>S:</strong> Set start cell (hold and drag)</p>
                     <p><strong>E:</strong> Set end cell (hold and drag)</p>
                     <p><strong>O:</strong> Toggle obstacles (hold and drag)</p>
+                    <p><strong>P:</strong> Add random obstacles (10% of free cells)</p>
                 </div>
                 <div class="controls-section">
                     <h4>Pathfinding:</h4>
@@ -38,6 +39,7 @@ export class UIManager {
                 </div>
                 <div class="algorithm-info">
                     <p>Current Algorithm: <span id="current-algorithm">A*</span></p>
+                    <p>Animation Speed: <span id="animation-info">Adaptive based on grid size</span></p>
                 </div>
             </div>
         `;
@@ -52,22 +54,6 @@ export class UIManager {
                     e.preventDefault();
                     this.toggleControls();
                     break;
-                case '1':
-                    e.preventDefault();
-                    this.setAlgorithm('astar');
-                    break;
-                case '2':
-                    e.preventDefault();
-                    this.setAlgorithm('dijkstra');
-                    break;
-                case '3':
-                    e.preventDefault();
-                    this.setAlgorithm('bfs');
-                    break;
-                case '4':
-                    e.preventDefault();
-                    this.setAlgorithm('dfs');
-                    break;
             }
         });
     }
@@ -77,26 +63,6 @@ export class UIManager {
         this.controlsVisible = !this.controlsVisible;
         overlay.style.display = this.controlsVisible ? 'flex' : 'none';
         console.log(`Controls ${this.controlsVisible ? 'shown' : 'hidden'}`);
-    }
-
-    setAlgorithm(algorithm) {
-        if (window.pathfindingApp) {
-            window.pathfindingApp.getPathfindingManager().setAlgorithm(algorithm);
-            this.updateAlgorithmDisplay(algorithm);
-        }
-    }
-
-    updateAlgorithmDisplay(algorithm) {
-        const algorithmDisplay = document.getElementById('current-algorithm');
-        if (algorithmDisplay) {
-            const algorithmNames = {
-                'astar': 'A*',
-                'dijkstra': 'Dijkstra',
-                'bfs': 'Breadth-First Search',
-                'dfs': 'Depth-First Search'
-            };
-            algorithmDisplay.textContent = algorithmNames[algorithm] || algorithm;
-        }
     }
 
     showMessage(message, type = 'info') {
@@ -112,12 +78,20 @@ export class UIManager {
                 messageDiv.parentNode.removeChild(messageDiv);
             }
         }, 3000);
-    }
+   }
 
     // Show initial help message
     showInitialHelp() {
         setTimeout(() => {
             this.showMessage('Press H for controls', 'info');
         }, 1000);
+    }
+
+    // Update animation information display
+    updateAnimationInfo(animationInfo) {
+        const animationElement = document.getElementById('animation-info');
+        if (animationElement) {
+            animationElement.textContent = `${animationInfo.animationDelay} (${animationInfo.gridSize})`;
+        }
     }
 }

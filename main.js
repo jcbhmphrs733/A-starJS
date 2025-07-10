@@ -1,3 +1,10 @@
+/*
+ * Pathfinding Visualizer
+ * Copyright (c) 2025 Jacob Humphreys
+ * Interactive pathfinding algorithm visualization tool
+ * All rights reserved.
+ */
+
 // main.js - Main application entry point
 import { GridManager } from './modules/GridManager.js';
 import { CellManager } from './modules/CellManager.js';
@@ -26,11 +33,11 @@ class PathfindingApp {
         // Initialize input manager
         this.inputManager = new InputManager(this.gridManager, this.cellManager);
         
-        // Initialize pathfinding manager
-        this.pathfindingManager = new PathfindingManager(this.gridManager, this.cellManager);
-        
         // Initialize UI manager
         this.uiManager = new UIManager();
+        
+        // Initialize pathfinding manager (pass uiManager for animation info updates)
+        this.pathfindingManager = new PathfindingManager(this.gridManager, this.cellManager, this.uiManager);
         
         // Create the initial grid
         this.gridManager.createGrid();

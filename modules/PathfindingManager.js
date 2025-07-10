@@ -1,11 +1,52 @@
 // PathfindingManager.js - Handles pathfinding algorithms and visualization
 export class PathfindingManager {
-    constructor(gridManager, cellManager) {
+    constructor(gridManager, cellManager, uiManager = null) {
         this.gridManager = gridManager;
         this.cellManager = cellManager;
+        this.uiManager = uiManager;
         this.currentPath = [];
         this.exploredCells = [];
         this.algorithm = 'astar'; // Default algorithm
+    }
+
+    // Calculate animation delay based on grid size
+    // Smaller grids get longer delays to make the search more visible
+    calculateAnimationDelay() {
+        const totalCells = this.gridManager.tilesAcross * this.gridManager.tilesDown;
+        
+        // Base delay calculation: smaller grids need more delay
+        // For very small grids (< 100 cells): 60ms delay
+        // For small grids (100-300 cells): 30ms delay
+        // For medium grids (300-600 cells): 15ms delay
+        // For large grids (600-1000 cells): 5ms delay
+        // For very large grids (> 1000 cells): 1ms delay
+
+        let delay;
+        if (totalCells < 100) {
+            delay = 60; // Slow for very small grids
+        } else if (totalCells < 300) {
+            delay = 30; // Medium-slow for small grids
+        } else if (totalCells < 600) {
+            delay = 15; // Medium for medium grids
+        } else if (totalCells < 1000) {
+            delay = 5; // Medium-fast for large grids
+        } else {
+            delay = 1; // Fast for very large grids
+        }
+        
+        return delay;
+    }
+
+    // Get animation info for debugging/display
+    getAnimationInfo() {
+        const totalCells = this.gridManager.tilesAcross * this.gridManager.tilesDown;
+        const delay = this.calculateAnimationDelay();
+        return {
+            gridSize: `${this.gridManager.tilesAcross}x${this.gridManager.tilesDown}`,
+            totalCells: totalCells,
+            animationDelay: delay + 'ms',
+            updateFrequency: 'Every 5 nodes'
+        };
     }
 
     // Set the pathfinding algorithm to use
@@ -32,7 +73,15 @@ export class PathfindingManager {
         const startPos = this.cellManager.getStartPosition();
         const endPos = this.cellManager.getEndPosition();
 
+        // Log pathfinding info including animation settings
+        const animInfo = this.getAnimationInfo();
         console.log(`Finding path from (${startPos.x}, ${startPos.y}) to (${endPos.x}, ${endPos.y}) using ${this.algorithm}`);
+        console.log(`Grid: ${animInfo.gridSize} (${animInfo.totalCells} cells), Animation: ${animInfo.animationDelay} delay, ${animInfo.updateFrequency}`);
+        
+        // Update UI with animation info if UIManager is available
+        if (this.uiManager) {
+            this.uiManager.updateAnimationInfo(animInfo);
+        }
 
         let result;
         switch(this.algorithm) {
@@ -133,9 +182,9 @@ export class PathfindingManager {
                 fScore.set(neighborKey, tentativeGScore + this.heuristic(neighborPos, end));
             }
 
-            // Add small delay for visualization
-            if (nodesExplored % 10 === 0) {
-                await this.sleep(1);
+            // Add delay for visualization based on grid size
+            if (nodesExplored % 5 === 0) { // More frequent updates for better visual feedback
+                await this.sleep(this.calculateAnimationDelay());
             }
         }
 
@@ -209,9 +258,9 @@ export class PathfindingManager {
                 }
             }
 
-            // Add small delay for visualization
-            if (nodesExplored % 10 === 0) {
-                await this.sleep(1);
+            // Add delay for visualization based on grid size
+            if (nodesExplored % 5 === 0) {
+                await this.sleep(this.calculateAnimationDelay());
             }
         }
 
@@ -262,9 +311,9 @@ export class PathfindingManager {
                 queue.push(neighborPos);
             }
 
-            // Add small delay for visualization
+            // Add delay for visualization based on grid size
             if (nodesExplored % 5 === 0) {
-                await this.sleep(1);
+                await this.sleep(this.calculateAnimationDelay());
             }
         }
 
@@ -319,9 +368,9 @@ export class PathfindingManager {
                 stack.push(neighborPos);
             }
 
-            // Add small delay for visualization
+            // Add delay for visualization based on grid size
             if (nodesExplored % 5 === 0) {
-                await this.sleep(1);
+                await this.sleep(this.calculateAnimationDelay());
             }
         }
 

@@ -143,7 +143,28 @@ export class InputManager {
     handleKeyDown(e) {
         const key = e.key.toLowerCase();
         
-        // Only handle our specific keys, let others pass through
+        // Handle keys that don't require hovered cell first
+        if (key === 'p') {
+            e.preventDefault();
+            const count = this.cellManager.addRandomObstacles(10); // Fixed 10% of free cells
+            this.showGenerationMessage(count, 10);
+            return;
+        }
+        
+        // Handle algorithm switching (1-4 keys)
+        if (['1', '2', '3', '4'].includes(key)) {
+            e.preventDefault();
+            const algorithms = {
+                '1': 'astar',
+                '2': 'dijkstra', 
+                '3': 'bfs',
+                '4': 'dfs'
+            };
+            this.setAlgorithm(algorithms[key]);
+            return;
+        }
+        
+        // Only handle our specific drag keys for the rest
         if (!['s', 'e', 'o'].includes(key)) {
             return;
         }
@@ -217,5 +238,49 @@ export class InputManager {
 
     isKeyPressed(key) {
         return this.keysPressed[key.toLowerCase()];
+    }
+
+    showGenerationMessage(count, percentage) {
+        // Try to access the UI manager to show a message
+        if (window.pathfindingApp && window.pathfindingApp.getUIManager) {
+            const uiManager = window.pathfindingApp.getUIManager();
+            if (uiManager) {
+                uiManager.showMessage(`Added ${count} random obstacles (${percentage}% of free cells)`, 'info');
+            }
+        }
+    }
+
+    setAlgorithm(algorithm) {
+        if (window.pathfindingApp) {
+            window.pathfindingApp.getPathfindingManager().setAlgorithm(algorithm);
+            this.updateAlgorithmDisplay(algorithm);
+            
+            // Show message about algorithm change
+            if (window.pathfindingApp.getUIManager) {
+                const uiManager = window.pathfindingApp.getUIManager();
+                if (uiManager) {
+                    const algorithmNames = {
+                        'astar': 'A*',
+                        'dijkstra': 'Dijkstra',
+                        'bfs': 'Breadth-First Search',
+                        'dfs': 'Depth-First Search'
+                    };
+                    uiManager.showMessage(`Algorithm: ${algorithmNames[algorithm]}`, 'info');
+                }
+            }
+        }
+    }
+
+    updateAlgorithmDisplay(algorithm) {
+        const algorithmDisplay = document.getElementById('current-algorithm');
+        if (algorithmDisplay) {
+            const algorithmNames = {
+                'astar': 'A*',
+                'dijkstra': 'Dijkstra',
+                'bfs': 'Breadth-First Search',
+                'dfs': 'Depth-First Search'
+            };
+            algorithmDisplay.textContent = algorithmNames[algorithm] || algorithm;
+        }
     }
 }

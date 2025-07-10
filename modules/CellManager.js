@@ -170,6 +170,57 @@ export class CellManager {
         console.log('All cells cleared');
     }
 
+    addRandomObstacles(percentage = 10) {
+        const dimensions = this.gridManager.getDimensions();
+        const totalCells = dimensions.totalCells;
+        
+        // Count current free cells (not start, end, or obstacle)
+        let freeCells = 0;
+        for (let y = 0; y < dimensions.tilesDown; y++) {
+            for (let x = 0; x < dimensions.tilesAcross; x++) {
+                const cell = this.gridManager.getCellAtPosition(x, y);
+                if (cell && 
+                    cell !== this.startCell && 
+                    cell !== this.endCell && 
+                    !this.isObstacle(cell)) {
+                    freeCells++;
+                }
+            }
+        }
+        
+        // Calculate how many obstacles to add (percentage of free cells)
+        const obstaclesToAdd = Math.floor((freeCells * percentage) / 100);
+        
+        console.log(`Adding ${obstaclesToAdd} obstacles (${percentage}% of ${freeCells} free cells)`);
+
+        let obstaclesPlaced = 0;
+        const maxAttempts = freeCells * 2; // Prevent infinite loop
+        let attempts = 0;
+
+        while (obstaclesPlaced < obstaclesToAdd && attempts < maxAttempts) {
+            // Generate random coordinates
+            const x = Math.floor(Math.random() * dimensions.tilesAcross);
+            const y = Math.floor(Math.random() * dimensions.tilesDown);
+            
+            const cell = this.gridManager.getCellAtPosition(x, y);
+            
+            if (cell && 
+                cell !== this.startCell && 
+                cell !== this.endCell && 
+                !this.isObstacle(cell)) {
+                
+                cell.classList.add('obstacle');
+                this.obstacleCells.add(cell);
+                obstaclesPlaced++;
+            }
+            
+            attempts++;
+        }
+
+        console.log(`Successfully placed ${obstaclesPlaced} additional obstacles`);
+        return obstaclesPlaced;
+    }
+
     setupGridResizeListener() {
         window.addEventListener('gridResized', () => {
             // Reset all cell references on grid resize
