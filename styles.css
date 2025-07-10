@@ -1,15 +1,15 @@
 :root {
-  --cell-size: 50px;
+  --cell-size: 20px;
   --grid-gap: 5px;
-  --grid-padding: 80px;
-  --bg-color: #05361b;
-  --cell-color: #0f690c;
+  --grid-padding: 40px;
+  --bg-color: #011209;
+  --cell-color: #0f300e;
   --cell-start-color: #00ff62;
   --cell-end-color: #ff0000;
-  --cell-obstacle-color: #0f4919;
-  --cell-path-color: #ffd549;
-  --cell-explored-color: #832ae9;
-  --border-radius: 5px; 
+  --cell-obstacle-color: #111c13;
+  --cell-path-color: #d3a600;
+  --cell-explored-color: #321256;
+  --border-radius: 2px; 
 }
 
 * {
@@ -27,6 +27,7 @@ html {
   justify-content: center;
   align-items: center;
   background-color: var(--bg-color);
+  overflow: hidden;
 }
 
 #tile-container {

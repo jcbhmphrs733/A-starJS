@@ -22,16 +22,17 @@ export class PathfindingManager {
         // For very large grids (> 1000 cells): 1ms delay
 
         let delay;
+        const delayMultiplier = 10; // Base multiplier for delay
         if (totalCells < 100) {
-            delay = 60; // Slow for very small grids
+            delay = 60 * delayMultiplier; // Slow for very small grids
         } else if (totalCells < 300) {
-            delay = 30; // Medium-slow for small grids
+            delay = 30 * delayMultiplier; // Medium-slow for small grids
         } else if (totalCells < 600) {
-            delay = 15; // Medium for medium grids
+            delay = 15 * delayMultiplier; // Medium for medium grids
         } else if (totalCells < 1000) {
-            delay = 5; // Medium-fast for large grids
+            delay = 5 * delayMultiplier; // Medium-fast for large grids
         } else {
-            delay = 1; // Fast for very large grids
+            delay = 1 * delayMultiplier; // Fast for very large grids
         }
         
         return delay;
