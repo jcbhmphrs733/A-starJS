@@ -18,12 +18,13 @@ export class GridManager {
         const padding = parseInt(rootStyles.getPropertyValue('--grid-padding')) * 2;
         
         // Use window dimensions minus padding for calculation
-        const availableWidth = window.innerWidth - padding;
-        const availableHeight = window.innerHeight - padding;
+        const availableWidth = Math.max(window.innerWidth - padding, cellSize + gap);
+        const availableHeight = Math.max(window.innerHeight - padding, cellSize + gap);
         
         // Calculate how many cells can fit, accounting for gaps
-        const tilesAcross = Math.floor((availableWidth - gap) / (cellSize + gap));
-        const tilesDown = Math.floor((availableHeight - gap) / (cellSize + gap));
+        // Ensure at least 1 cell can fit in each dimension
+        const tilesAcross = Math.max(1, Math.floor((availableWidth - gap) / (cellSize + gap)));
+        const tilesDown = Math.max(1, Math.floor((availableHeight - gap) / (cellSize + gap)));
         
         return { tilesAcross, tilesDown };
     }
