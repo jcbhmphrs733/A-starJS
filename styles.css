@@ -1,7 +1,7 @@
 :root {
   --cell-size: 20px;
   --grid-gap: 5px;
-  --grid-padding: 40px;
+  --grid-padding: 100px;
   --bg-color: #011209;
   --cell-color: #0f300e;
   --cell-start-color: #00ff62;
@@ -237,28 +237,4 @@ html {
   }
 }
 
-/* Media queries for very small screens */
-@media (max-height: 750px) {
-  :root {
-    --grid-padding: 20px; /* Reduced padding for medium-small screens */
-  }
-}
-
-@media (max-width: 600px), (max-height: 600px) {
-  :root {
-    --grid-padding: 10px; /* Reduced padding for small screens */
-  }
   
-  #tile-container {
-    /* Ensure grid always fits within viewport on small screens */
-    min-height: 0;
-  }
-}
-
-@media (max-width: 400px), (max-height: 400px) {
-  :root {
-    --grid-padding: 5px; /* Even smaller padding for very small screens */
-    --cell-size: 15px; /* Slightly smaller cells */
-    --grid-gap: 3px; /* Smaller gap */
-  }
-}
