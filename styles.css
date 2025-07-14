@@ -1,14 +1,14 @@
 :root {
-  --cell-size: 20px;
-  --grid-gap: 5px;
-  --grid-padding: 100px;
-  --bg-color: #011209;
-  --cell-color: #0f300e;
-  --cell-start-color: #00ff62;
-  --cell-end-color: #ff0000;
-  --cell-obstacle-color: #111c13;
-  --cell-path-color: #d3a600;
-  --cell-explored-color: #321256;
+  --cell-size: 15px;
+  --grid-gap: 4px;
+  --grid-padding: 40px;
+  --bg-color: #000340;
+  --cell-color: #080f9c;
+  --cell-obstacle-color: #000340;
+  --cell-start-color: #1aff00;
+  --cell-end-color: #ee0000;
+  --cell-path-color: #f2ff00;
+  --cell-explored-color: #6a00bb;
   --border-radius: 2px; 
 }
 
@@ -43,7 +43,7 @@ html {
   max-width: 100vw;
   box-sizing: border-box;
   /* Prevent overflow by limiting the actual grid size */
-  overflow: hidden;
+  overflow: hidden
 }
 
 .tile-cell {
@@ -53,7 +53,7 @@ html {
   border-radius: var(--border-radius);
   transition: transform 0.75s ease, background-color 0.75s ease;
   background-size: cover;
-  border: #131b2d 1px solid;
+  /* border: #131b2d 1px solid; */
 }
 .tile-cell.start {
   background-color: var(--cell-start-color);
